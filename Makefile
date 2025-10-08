@@ -29,12 +29,21 @@ show:
 	fi
 	@docker compose exec server bash -c "cd /app/source && /app/.venv/bin/alembic show $(revision)"
 
+test_all:
+	@docker compose exec server bash -c "cd /app/source && /app/.venv/bin/pytest -vs tests/"
+
+test:
+	@docker compose exec server bash -c "cd /app/source && /app/.venv/bin/pytest -vs tests/$(test_file)"
+
 # Docker commands
 destroy:
 	@docker compose down --volumes
 
 up:
 	@docker compose up -d
+
+build_and_up:
+	@docker compose up -d --build
 
 restart:
 	@make destroy
@@ -58,6 +67,7 @@ help:
 	@echo "  show revision=<id>               - Show specific migration"
 	@echo "  destroy                          - Stop and remove containers with volumes"
 	@echo "  up                               - Start containers in background"
+	@echo "  build_and_up                     - Start containers in background and build the server"
 	@echo "  restart                          - Restart containers (destroy + up)"
 	@echo "  logs                             - Show server logs"
 	@echo "  db_shell                         - Connect to database shell"
